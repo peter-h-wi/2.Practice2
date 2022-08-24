@@ -1,0 +1,8 @@
+#!/Users/peterwi/Desktop/1.Education/5.Fall2022/1.COMP590/1.Practice/2.Practice2/bin/python3
+# -*- coding: utf-8 -*-
+import re
+import sys
+from gunicorn.app.wsgiapp import run
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(run())
