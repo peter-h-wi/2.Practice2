@@ -46,9 +46,8 @@ def get_steps():
     myurl = "https://api.fitbit.com/1/user/-/activities/distance/date/today/1d.json"
     resp = requests.get(myurl, headers=myheader).json()
     activity_distance = resp["activities-distance"]
-    activity_dataset = resp["activities-distance-intraday"]["dataset"]
     while (len(activity_step) == 0 or len(activity_distance) == 0):
-        # if ther eis no data on that day, check the previous days.
+        # if there is no data on that day, check the previous days.
         dayinput -= timedelta(days=1)
         myurl = "https://api.fitbit.com/1/user/-/activities/steps/date/{}/1d.json".format(
             dayinput)
@@ -58,8 +57,6 @@ def get_steps():
             dayinput)
         resp = requests.get(myurl, headers=myheader).json()
         activity_distance = resp["activities-distance"]
-        activity_dataset = resp["activities-distance-intraday"]["dataset"]
-    recent = activity_dataset[-1]
     timeoffset = datetime.now() - datetime.combine(dayinput, datetime.min.time())
     ret = {"step-count": activity_step[-1]["value"],
            "distance": activity_distance[-1]["value"], "time offset": timeoffset.seconds//60}
