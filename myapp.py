@@ -33,7 +33,7 @@ def get_heart_rate():
     timeoffset = datetime.now(tz=timezone.utc) - datetime.combine(dayinput, datetime.strptime(
         recent["time"], "%H:%M:%S").time(), tzinfo=timezone.utc)
     ret = {"heart-rate": heartrate,
-           "time offset": timeoffset.seconds//60-240, "time now": recent["time"]}  # minutes
+           "time offset": timeoffset.seconds//60-240}  # minutes
     return jsonify(ret)
 
 
