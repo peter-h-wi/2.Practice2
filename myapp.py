@@ -1,5 +1,6 @@
+from time import timezone
 from flask import Flask, jsonify
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta, datetime, timezone
 import requests
 
 app = Flask(__name__)
@@ -29,9 +30,10 @@ def get_heart_rate():
     recent = activity_dataset[-1]
     # retrieve heartrate, timeoffset (min)
     heartrate = recent["value"]
-    timeoffset = datetime.now() - datetime.combine(dayinput, datetime.strptime(
-        recent["time"], "%H:%M:%S").time())
-    ret = {"heart-rate": heartrate, "time offset": timeoffset.seconds//60}
+    timeoffset = datetime.now(tz=timezone.utc) - datetime.combine(dayinput, datetime.strptime(
+        recent["time"], "%H:%M:%S").time(), tzinfo=timezone.utc)
+    ret = {"heart-rate": heartrate,
+           "time offset": timeoffset.seconds//60-240, "time now": recent["time"]}  # minutes
     return jsonify(ret)
 
 
@@ -57,9 +59,10 @@ def get_steps():
             dayinput)
         resp = requests.get(myurl, headers=myheader).json()
         activity_distance = resp["activities-distance"]
-    timeoffset = datetime.now() - datetime.combine(dayinput, datetime.min.time())
+    timeoffset = datetime.now(
+        tz=timezone.utc) - datetime.combine(dayinput, datetime.min.time(), tzinfo=timezone.utc)
     ret = {"step-count": activity_step[-1]["value"],
-           "distance": activity_distance[-1]["value"], "time offset": timeoffset.seconds//60}
+           "distance": activity_distance[-1]["value"], "time offset": timeoffset.seconds//60-240}
     return jsonify(ret)
 
 
